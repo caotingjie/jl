@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:beans="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.2.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--打开注解，使用注解必须有这个配置-->
+    <mvc:annotation-driven />
+
+    <!--访问静态资源,所有的请求都会被dispatcherServlet拦截，资源访问的也会，所以需要我们去指定一下-->
+    <!--方案一-->
+    <mvc:default-servlet-handler/>
+    <!--方案二-->
+    <!--<mvc:resources mapping="/js/jquery/**" location="/js/jquery/"/>-->
+
+    <!-- 自动开启扫描组件，还会扫描指定包的子包，注解的类由spring容器管理-->
+    <context:component-scan base-package="com.ctj.controllers"/>
+
+    <!--<context:component-scan base-package="com.com.ctj.controllers">-->
+        <!--<context:include-filter type="annotation"-->
+                                <!--expression="org.springframework.stereotype.Controller" />-->
+    <!--</context:component-scan>-->
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/views/" p:suffix=".jsp"/>
+
+</beans>
