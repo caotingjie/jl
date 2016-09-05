@@ -8,7 +8,7 @@
     </resultMap>
 
     <select id="getUserList" resultType="com.ctj.pojos.User">
-        SELECT * from user
+        SELECT * from t_user
     </select>
 
 </mapper>
