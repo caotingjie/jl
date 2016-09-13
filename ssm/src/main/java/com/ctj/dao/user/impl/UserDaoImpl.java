@@ -20,6 +20,6 @@ public class UserDaoImpl implements UserDao{
         Condition condition = new Condition(User.class);
         Example.Criteria criteria = condition.createCriteria();
         criteria.andEqualTo("userName",userName.trim());
-        return (User) userMapper.selectByCondition(condition);
+        return userMapper.selectByCondition(condition).get(0);
     }
 }
