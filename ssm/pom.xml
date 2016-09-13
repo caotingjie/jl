@@ -19,12 +19,24 @@
         <javax.servlet.jsp-api.version>2.3.1</javax.servlet.jsp-api.version>
         <spring-data-redis.version>1.5.0.RELEASE</spring-data-redis.version>
         <log4j.version>1.2.17</log4j.version>
-        <mysql-connector-java.version>5.1.17</mysql-connector-java.version>
         <shiro.version>1.2.3</shiro.version>
         <mybatis.version>3.2.2</mybatis.version>
         <mybatis.spring.version>1.2.2</mybatis.spring.version>
         <jstl.version>1.2</jstl.version>
         <cglib.version>3.1</cglib.version>
+
+
+        <!-- MyBatis Generator -->
+        <!-- Java接口和实体类 -->
+        <targetJavaProject>${basedir}/src/main/java</targetJavaProject>
+        <targetMapperPackage>com.ctj.mappers</targetMapperPackage>
+        <targetModelPackage>com.ctj.pojos</targetModelPackage>
+        <!-- XML生成路径 -->
+        <targetResourcesProject>${basedir}/src/main/resources</targetResourcesProject>
+        <targetXMLPackage>mappers</targetXMLPackage>
+
+        <!--指定项目构建编码类型 这样在编译的时候就不会出现xml文件乱码不能通过编译的情况了-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -34,6 +46,13 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.17</version>
+        </dependency>
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -122,12 +141,20 @@
             <artifactId>mybatis-spring</artifactId>
             <version>${mybatis.spring.version}</version>
         </dependency>
-        <!--mybatis end-->
+
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector-java.version}</version>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper</artifactId>
+            <version>3.3.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.mybatis</groupId>
+            <artifactId>mybatis-tool</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
+        <!--mybatis end-->
+
         <!-- DruidDataSource -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -163,4 +190,39 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <finalName>ROOT</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <configuration>
+                    <configurationFile>${basedir}/src/main/resources/mybatis/myBatisGenerator.xml</configurationFile>
+                    <overwrite>true</overwrite>
+                    <verbose>true</verbose>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.17</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>tk.mybatis</groupId>
+                        <artifactId>mapper</artifactId>
+                        <version>3.3.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering> <!-- 是否使用过滤器 -->
+            </resource>
+        </resources>
+    </build>
 </project>

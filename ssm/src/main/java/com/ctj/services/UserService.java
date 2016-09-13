@@ -1,6 +1,6 @@
 package com.ctj.services;
 
-import com.ctj.pojos.User;
+import com.ctj.pojos.user.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,4 +11,5 @@ import java.util.List;
 @Service
 public interface UserService {
     List<User> getUserList();
+    User getUserByUserName(String userName);
 }

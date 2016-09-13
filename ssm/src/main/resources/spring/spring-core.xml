@@ -2,8 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
@@ -46,13 +46,39 @@
         <property name="filters" value="stat"/>
     </bean>
 
-    <!-- mybatis文件配置，扫描所有mapper文件 -->
-    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" p:dataSource-ref="dataSource"
+    <!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" p:dataSource-ref="dataSource"
           p:configLocation="classpath:myBatis/myBatis.xml"
-          p:mapperLocations="classpath:mappers/*.xml"/>
+          p:mapperLocations="classpath:mappers/**/*.xml"/>-->
+
+    <!-- 定义Mybatis的SqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="mapperLocations">
+            <array>
+                <value>classpath*:mappers/**/*.xml</value>
+            </array>
+        </property>
+        <property name="typeAliasesPackage" value="com.ctj.pojos" />
+        <property name="configLocation" value="classpath:myBatis/myBatis.xml"></property>
+    </bean>
+
+     <!--定义自动扫描mapper包以及通用mapper接口 -->
+    <!--<bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.ctj.mappers" />
+        <property name="markerInterface" value="com.ctj.mybatis.tools.BaseMapper" />
+        <property name="properties">
+            <value>
+                IDENTITY=MYSQL
+            </value>
+        </property>
+    </bean>-->
+
+    <!--扫描service-->
+    <context:component-scan base-package="com.ctj.services"></context:component-scan>
+
 
     <!-- spring与mybatis整合配置，扫描所有dao -->
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" p:basePackage="com.com.ctj.services"
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" p:basePackage="com.ctj.dao"
           p:sqlSessionFactoryBeanName="sqlSessionFactory"/>
 
     <!-- 对dataSource 数据源进行事务管理 -->
