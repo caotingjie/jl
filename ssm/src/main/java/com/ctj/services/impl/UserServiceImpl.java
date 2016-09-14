@@ -1,10 +1,12 @@
 package com.ctj.services.impl;
 
-import com.ctj.dao.user.UserDao;
+import com.ctj.mappers.user.UserMapper;
 import com.ctj.pojos.user.User;
 import com.ctj.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Condition;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 
@@ -14,7 +16,7 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService{
     @Autowired
-    private UserDao userDao;
+    private UserMapper userMapper;
 
     @Override
     public List<User> getUserList() {
@@ -23,6 +25,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUserByUserName(String userName) {
-        return userDao.getUserByUserName(userName);
+        Condition condition = new Condition(User.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("userName",userName.trim());
+        return userMapper.selectByCondition(condition).get(0);
     }
 }

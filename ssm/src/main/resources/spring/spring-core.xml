@@ -55,15 +55,30 @@
         <property name="dataSource" ref="dataSource" />
         <property name="mapperLocations">
             <array>
-                <value>classpath*:mappers/**/*.xml</value>
+                <value>classpath:mappers/**/*.xml</value>
             </array>
         </property>
         <property name="typeAliasesPackage" value="com.ctj.pojos" />
-        <property name="configLocation" value="classpath:myBatis/myBatis.xml"></property>
+        <property name="configLocation" value="classpath:myBatis/myBatis.xml"/>
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <value>
+                            dialect=mysql
+                            rowBoundsWithCount=true
+                            pageSizeZero=true
+                            reasonable=true
+                            notEmpty=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
     </bean>
 
      <!--定义自动扫描mapper包以及通用mapper接口 -->
-    <!--<bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+    <bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.ctj.mappers" />
         <property name="markerInterface" value="com.ctj.mybatis.tools.BaseMapper" />
         <property name="properties">
@@ -71,15 +86,10 @@
                 IDENTITY=MYSQL
             </value>
         </property>
-    </bean>-->
+    </bean>
 
     <!--扫描service-->
-    <context:component-scan base-package="com.ctj.services"></context:component-scan>
-
-
-    <!-- spring与mybatis整合配置，扫描所有dao -->
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" p:basePackage="com.ctj.dao"
-          p:sqlSessionFactoryBeanName="sqlSessionFactory"/>
+    <context:component-scan base-package="com.ctj.services"/>
 
     <!-- 对dataSource 数据源进行事务管理 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
