@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: tingjie.cao
@@ -33,6 +34,7 @@
     <!-- END PAGE LEVEL STYLES -->
     <link rel="shortcut icon" href="media/image/favicon.ico"/>
 
+
     <script>
         function login() {
             $.ajax({
@@ -41,11 +43,8 @@
                 data:$("#loginForm").serialize(),
                 dataType:"json",
                 success:function (data) {
-                    if (data.flag == 'success'){
-                        alert('操作成功');
-                        window.location.href="/vip/vipEquitiesList.do";
-                    }else{
-                        alert('操作失败');
+                    if (data.flag == 'failed'){
+                        alert(data.msg)
                     }
                 },
                 error:function () {
@@ -66,7 +65,7 @@
 <!-- BEGIN LOGIN -->
 <div class="content">
     <!-- BEGIN LOGIN FORM -->
-    <form class="form-vertical login-form" action="/userLogin.do" id="loginForm" method="post">
+    <form class="form-vertical login-form" id="loginForm" method="post">
         <h3 class="form-title">Login to your account</h3>
         <div class="alert alert-error hide">
             <button class="close" data-dismiss="alert"></button>
