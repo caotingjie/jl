@@ -12,6 +12,7 @@
         <module>javaSE</module>
         <module>ssh</module>
         <module>ssm</module>
+        <module>algorithm</module>
     </modules>
 
 
