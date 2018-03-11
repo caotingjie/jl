@@ -13,24 +13,73 @@
         </property>
     </bean>
 
-    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
-        <!-- 基本属性 url、user、password -->
+    <!-- 多数据源aop datasource -->
+    <context:component-scan base-package="com.ctj.common.aop" />
+
+    <!-- base dataSource -->
+    <bean name="baseDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          destroy-method="close">
+        <property name="initialSize" value="5" />
+        <property name="maxActive" value="100" />
+        <property name="minIdle" value="10" />
+        <property name="maxWait" value="60000" />
+        <property name="validationQuery" value="SELECT 'x'" />
+        <property name="testOnBorrow" value="true" />
+        <property name="testOnReturn" value="true" />
+        <property name="testWhileIdle" value="true" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        <property name="removeAbandoned" value="true" />
+        <property name="removeAbandonedTimeout" value="1800" />
+        <property name="logAbandoned" value="true" />
+        <property name="filters" value="mergeStat" />
+    </bean>
+
+    <!-- 主库 -->
+    <bean name="master-dataSource" parent="baseDataSource"
+          init-method="init">
+        <property name="url" value="${master_driverUrl}" />
+        <property name="username" value="${master_username}" />
+        <property name="password" value="${master_password}" />
+    </bean>
+
+    <!-- 从库 -->
+    <bean name="slave-dataSource" parent="baseDataSource" init-method="init">
+        <property name="url" value="${slave_driverUrl}" />
+        <property name="username" value="${slave_username}" />
+        <property name="password" value="${slave_password}" />
+    </bean>
+
+    <!--主从库选择 -->
+    <bean id="dynamicDataSource" class="com.ctj.common.util.DynamicDataSource">
+        <property name="master" ref="master-dataSource" />
+        <property name="slaves">
+            <list>
+                <ref bean="slave-dataSource" />
+            </list>
+        </property>
+    </bean>
+
+
+
+    <!--<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        &lt;!&ndash; 基本属性 url、user、password &ndash;&gt;
         <property name="url" value="${jdbc.url}"/>
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
 
-        <!-- 配置初始化大小、最小、最大 -->
+        &lt;!&ndash; 配置初始化大小、最小、最大 &ndash;&gt;
         <property name="initialSize" value="${ds.initialSize}"/>
         <property name="minIdle" value="${ds.minIdle}"/>
         <property name="maxActive" value="${ds.maxActive}"/>
 
-        <!-- 配置获取连接等待超时的时间 -->
+        &lt;!&ndash; 配置获取连接等待超时的时间 &ndash;&gt;
         <property name="maxWait" value="${ds.maxWait}"/>
 
-        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        &lt;!&ndash; 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 &ndash;&gt;
         <property name="timeBetweenEvictionRunsMillis" value="${ds.timeBetweenEvictionRunsMillis}"/>
 
-        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        &lt;!&ndash; 配置一个连接在池中最小生存的时间，单位是毫秒 &ndash;&gt;
         <property name="minEvictableIdleTimeMillis" value="${ds.minEvictableIdleTimeMillis}"/>
 
         <property name="validationQuery" value="SELECT 'x'"/>
@@ -38,28 +87,23 @@
         <property name="testOnBorrow" value="false"/>
         <property name="testOnReturn" value="false"/>
 
-        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        &lt;!&ndash; 打开PSCache，并且指定每个连接上PSCache的大小 &ndash;&gt;
         <property name="poolPreparedStatements" value="false"/>
         <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
 
-        <!-- 配置监控统计拦截的filters -->
+        &lt;!&ndash; 配置监控统计拦截的filters &ndash;&gt;
         <property name="filters" value="stat"/>
-    </bean>
+    </bean>-->
 
-    <!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" p:dataSource-ref="dataSource"
-          p:configLocation="classpath:myBatis/myBatis.xml"
-          p:mapperLocations="classpath:mappers/**/*.xml"/>-->
 
     <!-- 定义Mybatis的SqlSessionFactory -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dynamicDataSource" />
         <property name="mapperLocations">
             <array>
-                <value>classpath:mappers/**/*.xml</value>
+                <value>classpath:myBatis/*.xml</value>
             </array>
         </property>
-        <property name="typeAliasesPackage" value="com.ctj.pojos" />
-        <property name="configLocation" value="classpath:myBatis/myBatis.xml"/>
         <property name="plugins">
             <array>
                 <bean class="com.github.pagehelper.PageHelper">
@@ -79,8 +123,7 @@
 
      <!--定义自动扫描mapper包以及通用mapper接口 -->
     <bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.ctj.mappers" />
-        <property name="markerInterface" value="com.ctj.mybatis.tools.BaseMapper" />
+        <property name="basePackage" value="com.ctj.mapper" />
         <property name="properties">
             <value>
                 IDENTITY=MYSQL
@@ -89,11 +132,11 @@
     </bean>
 
     <!--扫描service-->
-    <context:component-scan base-package="com.ctj.services"/>
+    <context:component-scan base-package="com.ctj.service"/>
 
     <!-- 对dataSource 数据源进行事务管理 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
-          p:dataSource-ref="dataSource"/>
+          p:dataSource-ref="dynamicDataSource"/>
 
 
     <!-- 事务管理 通知 -->
@@ -113,7 +156,7 @@
 
     <!-- 事务 aop 配置 -->
     <aop:config>
-        <aop:pointcut id="serviceMethods" expression="execution(* com.ctj.services..*(..))"/>
+        <aop:pointcut id="serviceMethods" expression="execution(* com.ctj.service..*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
     </aop:config>
 

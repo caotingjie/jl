@@ -31,7 +31,7 @@
         <!-- MyBatis Generator -->
         <!-- Java接口和实体类 -->
         <targetJavaProject>${basedir}/src/main/java</targetJavaProject>
-        <targetMapperPackage>com.ctj.mappers</targetMapperPackage>
+        <targetMapperPackage>com.ctj.mapper</targetMapperPackage>
         <targetModelPackage>com.ctj.pojos</targetModelPackage>
         <!-- XML生成路径 -->
         <targetResourcesProject>${basedir}/src/main/resources</targetResourcesProject>
