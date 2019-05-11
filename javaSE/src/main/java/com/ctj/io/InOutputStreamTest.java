@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class InOutputStreamTest {
     public static void main(String[] args) {
-        String s = "20180408";
+        String s = "20180508";
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         try {
             System.out.println(df.format(df.parse(s)));
