@@ -1,4 +1,4 @@
-package com.ctj.domain.entity;
+package com.ctj.entity;
 
 public class User {
     private Integer id;
