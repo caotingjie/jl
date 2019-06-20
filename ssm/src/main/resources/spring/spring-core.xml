@@ -27,7 +27,7 @@
         <property name="defaultAutoCommit" value="${dbcp.defaultAutoCommit}" />
         <property name="removeAbandoned" value="${dbcp.removeAbandoned}" />
         <property name="removeAbandonedTimeout" value="${dbcp.removeAbandonedTimeout}" />
-        <property name="logAbandoned" value="true"></property>
+        <property name="logAbandoned" value="true"/>
 
         <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
         <property name="timeBetweenEvictionRunsMillis" value="60000" />
@@ -60,11 +60,11 @@
     </bean>
 
 
-    <!--扫描service-->
-    <context:component-scan base-package="com.ctj.service"/>
-
-    <!-- 自动开启扫描组件，还会扫描指定包的子包，注解的类由spring容器管理-->
-    <context:component-scan base-package="com.ctj.controller"/>
+    <!--打开注解，使用注解必须有这个配置-->
+    <context:annotation-config />
+    <!--扫描service和mapper-->
+    <context:component-scan base-package="com.ctj.service.*"/>
+    <context:component-scan base-package="com.ctj.mapper"/>
 
     <!-- 对dataSource 数据源进行事务管理 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"

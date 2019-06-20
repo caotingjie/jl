@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * Created by tingjie.cao on 2016/9/13.
+ * @author tingjie.cao on 2016/9/13.
  */
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static Logger logger=LoggerFactory.getLogger(UserServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Resource
     private UserMapper userMapper;
 
@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getUserNameById(Integer id) {
         String userName = userMapper.getUserNameById(id);
-        logger.info("userName: "+userName);
+        logger.info("userName: " + userName);
         return userName;
     }
 }
