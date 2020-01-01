@@ -11,7 +11,7 @@ public class IntegerToBinary {
     public void test(){
         //方法一
         System.out.println(Integer.toBinaryString(50));
-
+        System.out.println(Integer.toBinaryString(50));
 
         //方法二
         StringBuilder sb = new StringBuilder();
